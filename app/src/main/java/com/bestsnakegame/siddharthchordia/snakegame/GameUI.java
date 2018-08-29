@@ -84,6 +84,11 @@ public class GameUI extends View {
         float width = size.x;
         float height = size.y;
 
+        Paint boundaryColor = new Paint();
+        boundaryColor.setColor(Color.BLUE);
+        boundaryColor.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(100,100,width-100,height-100,boundaryColor);
+
         if(snakePx!=null) {
 
             for (int i = 0; i < snakePx.size(); i++) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.view.Display;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class GameEngine {
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-         screenWIdth = size.x;
+        screenWIdth = size.x;
         screenHeight = size.y;
     }
 
@@ -55,18 +56,26 @@ public class GameEngine {
             snakePy.set(i,snakePy.get(i-1));
         }
 
-        if(vx!=-gameUI.lastHorizontalSwipe) {
+        if(vx!=-10*gameUI.lastHorizontalSwipe) {
             vx = 10*gameUI.lastHorizontalSwipe;
 
             snakePx.set(0, snakePx.get(0) + vx);
 
         }
+        else
+        {
+            gameUI.lastHorizontalSwipe = vx/10;
+        }
 
 
-        if(vy!=-gameUI.lastVerticalSwipe) {
+        if(vy!=-10*gameUI.lastVerticalSwipe) {
             vy = 10* gameUI.lastVerticalSwipe;
             snakePy.set(0, snakePy.get(0) + vy);
 
+        }
+        else
+        {
+            gameUI.lastVerticalSwipe =  vy/10;
         }
 
 
@@ -107,15 +116,34 @@ public class GameEngine {
     public void snakeDies()
     {
 
-    }
-
-    public void snakeBitesItself()
-    {
 
     }
 
-    public void snakeBitesWall()
+    public boolean snakeBitesItself()
     {
+        boolean biteFlag =false;
+        for(int i=0;i<snakePx.size();i++)
+        {
+            if(snakePx.get(i)==snakePx.get(0)&&snakePy.get(0)==snakePy.get(i))
+            {
+                biteFlag=true;
+            }
+        }
+
+
+        return biteFlag;
+
+    }
+
+    public boolean snakeBitesWall()
+    {
+        boolean biteFlag = false;
+        if(snakePx.get(0)>=screenWIdth-100||snakePx.get(0)<=100||snakePy.get(0)>=screenHeight-100||snakePy.get(0)<=100)
+        {
+            biteFlag=true;
+        }
+
+        return biteFlag;
 
     }
 
@@ -134,6 +162,8 @@ public class GameEngine {
 
         snakeMovementStep();
         snakeEatsEgg();
+        GameThread.gameOver = snakeBitesItself();
+        GameThread.gameOver = snakeBitesWall();
         renderSnake();
         //Fill this up with all the game updating methods like the above one
 

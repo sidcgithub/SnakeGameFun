@@ -65,11 +65,9 @@ public class GameThread extends Thread {//Creates a separate thread for the game
 
         }
 
-        try {
-            this.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+
+
 
 
     }
