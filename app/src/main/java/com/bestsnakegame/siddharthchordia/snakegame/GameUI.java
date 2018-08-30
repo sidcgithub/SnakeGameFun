@@ -25,6 +25,12 @@ public class GameUI extends View {
     List<Integer> snakePy = new ArrayList<Integer>();
     public int eggX;
     public int eggY;
+    public static final int LEFT = 1;
+    public static final int RIGHT = 2;
+    public static final int UP = 3;
+    public static final int DOWN = 4;
+    public static int lastDirection = 2;
+
 
 
     public GameUI(Context context) {
@@ -34,34 +40,57 @@ public class GameUI extends View {
         setBackgroundColor(Color.BLACK);
     }
 
-    int lastHorizontalSwipe = 1, lastVerticalSwipe = 0;
+    int lastHorizontalSwipe = 1, lastVerticalSwipe = 0; //Initilaize swipe direction so that snake moves Right
 
-    public int detectHorizontalSwipe(boolean swipeDirection)
+    public int detectSwipe(int swipeDirection)
     {
-        //Enter the logic for a horizontal swipe
-        if(swipeDirection==true)
+
+        switch(swipeDirection)
         {
-            lastHorizontalSwipe = 1;
-        }
-        else
-        {
-            lastHorizontalSwipe = -1;
+            case LEFT: if(lastDirection==RIGHT)
+            {
+                break;
+            }
+                lastHorizontalSwipe = -1;
+                        lastVerticalSwipe = 0;
+                        lastDirection = LEFT;
+                        break;
+            case RIGHT: if(lastDirection==LEFT)
+            {
+                break;
+            }
+
+                lastHorizontalSwipe = 1;
+                lastVerticalSwipe = 0;
+                lastDirection= RIGHT;
+                break;
+
+            case UP:  if(lastDirection==DOWN)
+            {
+                break;
+            }
+
+                lastHorizontalSwipe = 0;
+                lastVerticalSwipe = -1;
+                lastDirection = UP;
+                break;
+            case DOWN:
+                if(lastDirection==UP)
+                {
+                    break;
+                }
+                lastHorizontalSwipe = 0;
+                lastVerticalSwipe = 1;
+                lastDirection  = DOWN;
+                break;
+            default: Log.e("Error","Incorrect input");
+
+
         }
         return lastHorizontalSwipe;
     }
 
-    public int detectVerticalSwipe(boolean swipeDirection)
-    {
-        if(swipeDirection==true)
-        {
-            lastVerticalSwipe = -1;
-        }
-        else
-        {
-            lastVerticalSwipe = 1;
-        }
-        return 1; //Enter the logic for a vertical swipe
-    }
+
 
     public void printSnake()
     {
@@ -136,15 +165,13 @@ public class GameUI extends View {
 
                 } else {
                     if (x1 > x2 && (x1 - x2) * (x1 - x2) > 100 * 100) {
-                        lastHorizontalSwipe = -1;
-                        lastVerticalSwipe = 0;
+                        detectSwipe(LEFT);
                         Log.d("Horizontal Swipe", "onTouchEvent: SUccessful Horizontal Swipe Left ");
                         Toast.makeText(appContext, "Horizontal Left Swipe", Toast.LENGTH_SHORT).show();
                         //Toast.makeText(getActivity(), "Left swipe", Toast.LENGTH_SHORT).show();
                     }
                     if (x2 > x1 && (x1 - x2) * (x1 - x2) > 100 * 100) {
-                        lastHorizontalSwipe = 1;
-                        lastVerticalSwipe = 0;
+                        detectSwipe(RIGHT);
                         Log.d("Horizontal Swipe", "onTouchEvent: SUccessful Horizontal Swipe RIght ");
                         Toast.makeText(appContext, "Horizontal Right Swipe", Toast.LENGTH_SHORT).show();
 
@@ -154,8 +181,7 @@ public class GameUI extends View {
                     if (y2 > y1 && (y1 - y2) * (y1 - y2) > 100 * 100) {
                         Log.d("Vertical Swipe", "onTouchEvent: SUccessful Vertical Swipe Down ");
 
-                        lastHorizontalSwipe = 0;
-                        lastVerticalSwipe = 1;
+                        detectSwipe(DOWN);
 
                         Toast.makeText(appContext, "Vertical Down Swipe", Toast.LENGTH_SHORT).show();
 
@@ -164,8 +190,7 @@ public class GameUI extends View {
                     if (y2 < y1 && (y1 - y2) * (y1 - y2) > 100 * 100) {
                         Log.d("Vertical Swipe", "onTouchEvent: SUccessful Vertical Swipe Up ");
 
-                        lastHorizontalSwipe = 0;
-                        lastVerticalSwipe = -1;
+                        detectSwipe(UP);
 
                         Toast.makeText(appContext, "Vertical Up Swipe", Toast.LENGTH_SHORT).show();
 

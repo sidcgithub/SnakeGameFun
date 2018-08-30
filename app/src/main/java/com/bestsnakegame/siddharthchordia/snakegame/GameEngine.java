@@ -16,11 +16,17 @@ public class GameEngine {
     List<Integer> snakePx = new ArrayList<Integer>();
     List<Integer> snakePy = new ArrayList<Integer>();
 
+    List<Integer> snakePxHistory = new ArrayList<Integer>();
+    List<Integer> snakePyHistory = new ArrayList<Integer>();
+
+
     int eggX = 200;
     int eggY = 200;
 
     int screenHeight;
     int screenWIdth;
+
+
 
 
 
@@ -36,6 +42,8 @@ public class GameEngine {
         {
             snakePx.add(pos);
             snakePy.add(200);
+            snakePxHistory.add(pos-1);
+            snakePyHistory.add(200);
         }
         theMainApplicationContext = context;
         gameUI = gameView;
@@ -50,33 +58,20 @@ public class GameEngine {
     public void snakeMovementStep()
     {
         int snakeLength = snakePx.size();
-        for(int i = snakeLength-1;i>=1;i--)
-        {
-            snakePx.set(i,snakePx.get(i-1));
-            snakePy.set(i,snakePy.get(i-1));
+        for(int i = snakeLength-1;i>=1;i--) {
+            snakePx.set(i, snakePx.get(i)+(snakePx.get(i - 1)-snakePxHistory.get(i-1)));
+            snakePxHistory.set(i-1,snakePx.get(i-1));
+            snakePy.set(i, snakePy.get(i)+(snakePy.get(i - 1)-snakePyHistory.get(i-1)));
+            snakePyHistory.set(i-1,snakePy.get(i-1));
         }
-
-        if(vx!=-10*gameUI.lastHorizontalSwipe) {
-            vx = 10*gameUI.lastHorizontalSwipe;
-
-            snakePx.set(0, snakePx.get(0) + vx);
-
-        }
-        else
-        {
-            gameUI.lastHorizontalSwipe = vx/10;
-        }
+        vx = 1*gameUI.lastHorizontalSwipe;
+        snakePx.set(0, snakePx.get(0) + vx);
 
 
-        if(vy!=-10*gameUI.lastVerticalSwipe) {
-            vy = 10* gameUI.lastVerticalSwipe;
-            snakePy.set(0, snakePy.get(0) + vy);
+        vy = 1* gameUI.lastVerticalSwipe;
+        snakePy.set(0, snakePy.get(0) + vy);
 
-        }
-        else
-        {
-            gameUI.lastVerticalSwipe =  vy/10;
-        }
+
 
 
 
