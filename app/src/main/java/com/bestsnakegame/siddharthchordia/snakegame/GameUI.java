@@ -2,10 +2,13 @@ package com.bestsnakegame.siddharthchordia.snakegame;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -23,6 +26,7 @@ public class GameUI extends View {
 
     List<Integer> snakePx = new ArrayList<Integer>();
     List<Integer> snakePy = new ArrayList<Integer>();
+    List<Integer> snakeRotate = new ArrayList<>();
     public int eggX;
     public int eggY;
     public static final int LEFT = 1;
@@ -114,18 +118,116 @@ public class GameUI extends View {
         float height = size.y;
 
         Paint boundaryColor = new Paint();
-        boundaryColor.setColor(Color.BLUE);
+        boundaryColor.setColor(Color.RED);
         boundaryColor.setStyle(Paint.Style.STROKE);
         canvas.drawRect(100,100,width-100,height-100,boundaryColor);
 
+        Bitmap btHeadR = BitmapFactory.decodeResource(getResources(),R.drawable.closedmouth);
+        Bitmap btBodyH =  BitmapFactory.decodeResource(getResources(),R.drawable.body);
+        Bitmap btTailR =  BitmapFactory.decodeResource(getResources(),R.drawable.tail);
+
+        Bitmap btHeadL = BitmapFactory.decodeResource(getResources(),R.drawable.closedmouthleft);
+        Bitmap btBodyV =  BitmapFactory.decodeResource(getResources(),R.drawable.bodyvertical);
+        Bitmap btTailL =  BitmapFactory.decodeResource(getResources(),R.drawable.tailleft);
+
+        Bitmap btHeadU = BitmapFactory.decodeResource(getResources(),R.drawable.closedmouthup);
+        Bitmap btTailU =  BitmapFactory.decodeResource(getResources(),R.drawable.tailup);
+
+        Bitmap btHeadD = BitmapFactory.decodeResource(getResources(),R.drawable.closedmouthdown);
+        Bitmap btTailD =  BitmapFactory.decodeResource(getResources(),R.drawable.taildown);
+
+        Bitmap headRight = Bitmap.createScaledBitmap(btHeadR,20,20,false);
+        Bitmap bodyHorizontal = Bitmap.createScaledBitmap(btBodyH,20,20,false);
+        Bitmap tailRight = Bitmap.createScaledBitmap(btTailR,20,20,false);
+
+        Bitmap headLeft = Bitmap.createScaledBitmap(btHeadL,20,20,false);
+        Bitmap bodyVertical = Bitmap.createScaledBitmap(btBodyV,20,20,false);
+        Bitmap tailLeft = Bitmap.createScaledBitmap(btTailL,20,20,false);
+
+        Bitmap headUp = Bitmap.createScaledBitmap(btHeadU,20,20,false);
+        Bitmap tailUp = Bitmap.createScaledBitmap(btTailU,20,20,false);
+
+        Bitmap headDown = Bitmap.createScaledBitmap(btHeadD,20,20,false);
+        Bitmap tailDown = Bitmap.createScaledBitmap(btTailD,20,20,false);
+
+        Drawable background = getResources().getDrawable(R.drawable.snakebackground);
+
+         this.setBackground(background);
         if(snakePx!=null) {
 
             for (int i = 0; i < snakePx.size(); i++) {
                 Paint squareColor = new Paint();
-                squareColor.setColor(Color.BLUE);
+                squareColor.setColor(Color.YELLOW);
                 //This is incorrect but easier to implement for the egg
-                canvas.drawRect(eggX,eggY,eggX+10,eggY+10,squareColor);
-                canvas.drawRect(snakePx.get(i), snakePy.get(i), snakePx.get(i) + 10, snakePy.get(i) + 10, squareColor);
+                canvas.drawRect(eggX,eggY,eggX+20,eggY+20,squareColor);
+                if(i==0) {
+                    switch(snakeRotate.get(i))
+                    {
+                        case UP:
+                            canvas.drawBitmap(headUp, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+                        case DOWN:
+                            canvas.drawBitmap(headDown, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+                        case LEFT:
+                            canvas.drawBitmap(headLeft, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+                        case RIGHT:
+                            canvas.drawBitmap(headRight, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+
+                    }
+                }
+                else if(i == snakePx.size()-1)
+                {
+                    switch(snakeRotate.get(i))
+                    {
+                        case UP:
+                            canvas.drawBitmap(tailUp, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+                        case DOWN:
+                            canvas.drawBitmap(tailDown, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+                        case LEFT:
+                            canvas.drawBitmap(tailLeft, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+                        case RIGHT:
+                            canvas.drawBitmap(tailRight, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+
+                    }
+                }
+                else
+                {
+                    switch(snakeRotate.get(i))
+                    {
+                        case UP:
+                            canvas.drawBitmap(bodyVertical, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+                        case DOWN:
+                            canvas.drawBitmap(bodyVertical, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+                        case LEFT:
+                            canvas.drawBitmap(bodyHorizontal, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+                        case RIGHT:
+                            canvas.drawBitmap(bodyHorizontal, (float) snakePx.get(i), (float) snakePy.get(i), null);
+
+                            break;
+
+                    }
+                }
                 Log.d("This is working", "onDraw: X coord "+ snakePx.get(i)+" Y coord "+ snakePy.get(i));
             }
         }

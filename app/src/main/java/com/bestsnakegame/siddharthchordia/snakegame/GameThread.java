@@ -56,7 +56,7 @@ public class GameThread extends Thread {//Creates a separate thread for the game
 
             gameEngine.updateGameFrame();
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             }
             catch (Exception e)
             {

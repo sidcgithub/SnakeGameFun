@@ -15,10 +15,7 @@ public class GameEngine {
     int vx = 1, vy =0;// These are the x and y velocities of the head of the snake
     List<Integer> snakePx = new ArrayList<Integer>();
     List<Integer> snakePy = new ArrayList<Integer>();
-
-    List<Integer> snakePxHistory = new ArrayList<Integer>();
-    List<Integer> snakePyHistory = new ArrayList<Integer>();
-
+    List<Integer> snakeRotate = new ArrayList<>();
 
     int eggX = 200;
     int eggY = 200;
@@ -38,12 +35,11 @@ public class GameEngine {
     {
         this.vx = 0;
         this.vy = 1;
-        for(int i = 0, pos = 200;i<40;i+=10, pos = pos-10)
+        for(int i = 0, pos = 200;i<80;i+=20, pos = pos-20)
         {
             snakePx.add(pos);
             snakePy.add(200);
-            snakePxHistory.add(pos-1);
-            snakePyHistory.add(200);
+            snakeRotate.add(1);
         }
         theMainApplicationContext = context;
         gameUI = gameView;
@@ -59,17 +55,18 @@ public class GameEngine {
     {
         int snakeLength = snakePx.size();
         for(int i = snakeLength-1;i>=1;i--) {
-            snakePx.set(i, snakePx.get(i)+(snakePx.get(i - 1)-snakePxHistory.get(i-1)));
-            snakePxHistory.set(i-1,snakePx.get(i-1));
-            snakePy.set(i, snakePy.get(i)+(snakePy.get(i - 1)-snakePyHistory.get(i-1)));
-            snakePyHistory.set(i-1,snakePy.get(i-1));
+            snakePx.set(i, snakePx.get(i - 1));
+            snakePy.set(i, snakePy.get(i - 1));
+            snakeRotate.set(i, snakeRotate.get(i-1));
         }
-        vx = 1*gameUI.lastHorizontalSwipe;
+        vx = 20*gameUI.lastHorizontalSwipe;
         snakePx.set(0, snakePx.get(0) + vx);
 
 
-        vy = 1* gameUI.lastVerticalSwipe;
+        vy = 20* gameUI.lastVerticalSwipe;
         snakePy.set(0, snakePy.get(0) + vy);
+
+        snakeRotate.set(0,GameUI.lastDirection);
 
 
 
@@ -87,6 +84,7 @@ public class GameEngine {
     {
         snakePy.add(snakePy.get(snakePy.size()-1));
         snakePx.add(snakePx.get(snakePx.size()-1));
+        snakeRotate.add(snakeRotate.get(snakeRotate.size()-1));
 
     }
 
@@ -104,8 +102,8 @@ public class GameEngine {
     public void generateNewEgg()
     {
         Random rand = new Random();
-        eggX = rand.nextInt((screenWIdth-200)/10)*10+100;
-        eggY = rand.nextInt((screenHeight-200)/10)*10+100;
+        eggX = rand.nextInt((screenWIdth-200)/20)*20+100;
+        eggY = rand.nextInt((screenHeight-200)/20)*20+100;
     }
 
     public void snakeDies()
@@ -133,7 +131,7 @@ public class GameEngine {
     public boolean snakeBitesWall()
     {
         boolean biteFlag = false;
-        if(snakePx.get(0)>=screenWIdth-100||snakePx.get(0)<=100||snakePy.get(0)>=screenHeight-100||snakePy.get(0)<=100)
+        if(snakePx.get(0)>=screenWIdth-120||snakePx.get(0)<=100||snakePy.get(0)>=screenHeight-120||snakePy.get(0)<=100)
         {
             biteFlag=true;
         }
@@ -149,6 +147,7 @@ public class GameEngine {
 
         gameUI.snakePx = snakePx;
         gameUI.snakePy = snakePy;
+        gameUI.snakeRotate = snakeRotate;
 
     }
 
@@ -158,7 +157,9 @@ public class GameEngine {
         snakeMovementStep();
         snakeEatsEgg();
         GameThread.gameOver = snakeBitesItself();
-        GameThread.gameOver = snakeBitesWall();
+
+            GameThread.gameOver = snakeBitesWall();
+
         renderSnake();
         //Fill this up with all the game updating methods like the above one
 
